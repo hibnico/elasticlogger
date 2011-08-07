@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="lib" path="lib/elasticsearch-0.17.2.jar" sourcepath="lib-src/elsticsearch-0.17.2.jar"/>
+	<classpathentry kind="lib" path="lib/jline-0.9.94.jar"/>
+	<classpathentry kind="lib" path="lib/jna-3.2.7.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-analyzers-3.3.0.jar" sourcepath="lib-src/lucene-analyzers-3.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-3.3.0.jar" sourcepath="lib-src/lucene-core-3.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-highlighter-3.3.0.jar" sourcepath="lib-src/lucene-highlighter-3.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-memory-3.3.0.jar" sourcepath="lib-src/lucene-memory-3.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-queries-3.3.0.jar" sourcepath="lib-src/lucene-queries-3.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/logback-core-0.9.24.jar" sourcepath="lib-src/logback-core-0.9.24.jar"/>
+	<classpathentry kind="lib" path="lib/logback-access-0.9.24.jar" sourcepath="lib-src/logback-access-0.9.24.jar"/>
+	<classpathentry kind="lib" path="lib/logback-classic-0.9.24.jar" sourcepath="lib-src/logback-classic-0.9.24.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.6.1.jar" sourcepath="lib-src/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

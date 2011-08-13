@@ -94,7 +94,11 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
         String json = jsonBuilder.getResult();
         if (client == null) { // the client maybe not be ready yet
-            queue.add(json);
+            boolean added = queue.add(json);
+            if (!added) {
+                addError("ElasticLoggerAppender queue is full, too much events while waiting the"
+                        + " elasticsearch client to boot. Some events are then lost.");
+            }
         } else {
             doIndex(json);
         }

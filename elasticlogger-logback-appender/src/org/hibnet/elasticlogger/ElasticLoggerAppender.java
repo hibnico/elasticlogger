@@ -3,6 +3,8 @@ package org.hibnet.elasticlogger;
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.node.Node;
@@ -19,9 +21,13 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
     private String indexType = "log";
 
+    private int queueSize = 1000;
+
     private Node node;
 
-    private Client client;
+    private volatile Client client;
+
+    private Queue<String> queue;
 
     public void setClusterName(String clusterName) {
         this.clusterName = clusterName;
@@ -35,16 +41,38 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
         this.indexType = indexType;
     }
 
+    public void setQueueSize(int queueSize) {
+        this.queueSize = queueSize;
+    }
+
     @Override
     public void start() {
-        node = nodeBuilder().client(true).clusterName(clusterName).node();
-        client = node.client();
+        queue = new LinkedBlockingQueue<String>(queueSize);
+
+        // create the client asynchronously to not make the application startup wait for a logger to start
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                node = nodeBuilder().client(true).clusterName(clusterName).node();
+                client = node.client();
+                // now that the client has started, empty the buffered events
+                while (!queue.isEmpty()) {
+                    doIndex(queue.poll());
+                }
+                // Note : there may be some very edge case where the queue might be still not empty here, but it seems
+                // very unlikely, and we accept here to lost these events to avoid too much synchronization between the
+                // threads
+            }
+        }, "ElasticloggerAppender node client starter").start();
+
         super.start();
     }
 
     @Override
     public void stop() {
-        node.close();
+        if (node != null) {
+            node.close();
+        }
         super.stop();
     }
 
@@ -55,21 +83,32 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
         jsonBuilder.add("message", event.getMessage());
         jsonBuilder.add("marker", event.getMarker());
         jsonBuilder.add("loggerName", event.getLoggerName());
-        for (Entry<String, String> mdcEntry : event.getMdc().entrySet()) {
-            jsonBuilder.add("mdc_" + mdcEntry.getKey(), mdcEntry.getValue());
+        if (event.getMdc() != null) {
+            for (Entry<String, String> mdcEntry : event.getMdc().entrySet()) {
+                jsonBuilder.add("mdc_" + mdcEntry.getKey(), mdcEntry.getValue());
+            }
         }
         jsonBuilder.add("threadName", event.getThreadName());
         jsonBuilder.add("timeStamp", Long.toString(event.getTimeStamp()));
         jsonBuilder.add("stackTrace", ThrowableProxyUtil.asString(event.getThrowableProxy()));
 
-        client.prepareIndex(indexName, indexType).setSource(jsonBuilder.getResult()).execute();
+        String json = jsonBuilder.getResult();
+        if (client == null) { // the client maybe not be ready yet
+            queue.add(json);
+        } else {
+            doIndex(json);
+        }
+    }
+
+    private void doIndex(String json) {
+        client.prepareIndex(indexName, indexType).setSource(json).execute();
         // not that we don't wait for the response, but this is nice, we don't want to have the main thread wait for
         // some remote logging indexation
     }
 
     private static class JsonBuilder {
 
-        private StringBuilder builder = new StringBuilder('{');
+        private StringBuilder builder = new StringBuilder("{");
 
         private boolean first = true;
 
@@ -85,15 +124,15 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
                 return;
             }
             if (first) {
-                builder.append('\'');
+                builder.append('\"');
             } else {
-                builder.append(",'");
+                builder.append(",\"");
             }
             first = false;
             builder.append(name);
-            builder.append("':'");
-            builder.append(value.replaceAll("'", "\\'"));
-            builder.append('\'');
+            builder.append("\":\"");
+            builder.append(value.replaceAll("\"", "\\\""));
+            builder.append('\"');
         }
 
         private String getResult() {

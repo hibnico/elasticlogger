@@ -1,0 +1,3 @@
+<%@ val name : String %>
+<%@ val city : String %>
+Hi ${name}, ${city}

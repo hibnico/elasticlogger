@@ -1,2 +1,2 @@
-bin
-.scala_dependencies
+*/bin
+*/.scala_dependencies

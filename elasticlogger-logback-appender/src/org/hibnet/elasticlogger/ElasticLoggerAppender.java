@@ -49,7 +49,7 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
     public void start() {
         queue = new LinkedBlockingQueue<String>(queueSize);
 
-        // create the client asynchronously to not make the application startup wait for a logger to start
+        // do make the make the logger (and probably the application too) wait for elasticsearch to boot
         new Thread(new Runnable() {
             @Override
             public void run() {

@@ -2,9 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="lib/elasticsearch-0.17.2.jar" sourcepath="lib-src/elsticsearch-0.17.2.jar"/>
-	<classpathentry kind="lib" path="lib/logback-core-0.9.24.jar" sourcepath="lib-src/logback-core-0.9.24.jar"/>
-	<classpathentry kind="lib" path="lib/logback-classic-0.9.24.jar" sourcepath="lib-src/logback-classic-0.9.24.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.6.1.jar" sourcepath="lib-src/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=elasticlogger-logback-appender&amp;ivyXmlPath=ivy.xml&amp;confs=*&amp;ivySettingsPath=%24%7Bworkspace_loc%3Aelasticlogger-logback-appender%2Fivysettings.xml%7D&amp;loadSettingsOnDemand=false&amp;propertyFiles=&amp;acceptedTypes=jar%2Cbundle%2Cejb%2Cmaven-plugin&amp;sourceTypes=source&amp;javadocTypes=javadoc&amp;sourceSuffixes=-source%2C-sources%2C-src&amp;javadocSuffixes=-javadoc%2C-javadocs%2C-doc%2C-docs&amp;alphaOrder=true&amp;resolveInWorkspace=true&amp;resolveBeforeLaunch=false&amp;retrievedClasspath=false&amp;mapIfOnlyOneSource=false&amp;mapIfOnlyOneJavadoc=false&amp;useExtendedResolveId=false"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

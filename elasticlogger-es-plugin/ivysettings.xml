@@ -1,0 +1,64 @@
+<ivysettings>
+
+    <settings defaultResolver="all" />
+
+    <property name="caches.basedir" value="${ivy.default.ivy.user.dir}/repo-caches" />
+
+    <property name="springrepo.url" value="http://repository.springsource.com/ivy" />
+    <property name="springrepo.pattern" value="[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+
+    <caches>
+        <cache name="maven-central" basedir="${caches.basedir}/maven-central" />
+        <cache name="javanet" basedir="${caches.basedir}/javanet" />
+        <cache name="springrepo" basedir="${caches.basedir}/springrepo" />
+        <cache name="jboss" basedir="${caches.basedir}/jboss" />
+        <cache name="codehaus" basedir="${caches.basedir}/codehaus" />
+    </caches>
+
+    <resolvers>
+
+        <ibiblio name="maven-central" root="http://repo1.maven.org/maven2/" m2compatible="true" checksums="" cache="maven-central" />
+
+        <ibiblio name="javanet" root="http://download.java.net/maven/2/" m2compatible="true" />
+
+        <url name="springrepo.bundles.release" cache="springrepo">
+            <ivy pattern="${springrepo.url}/bundles/release/${springrepo.pattern}" />
+            <artifact pattern="${springrepo.url}/bundles/release/${springrepo.pattern}" />
+        </url>
+        <url name="springrepo.bundles.external" cache="springrepo">
+            <ivy pattern="${springrepo.url}/bundles/external/${springrepo.pattern}" />
+            <artifact pattern="${springrepo.url}/bundles/external/${springrepo.pattern}" />
+        </url>
+        <url name="springrepo.libraries.release" cache="springrepo">
+            <ivy pattern="${springrepo.url}/libraries/release/${springrepo.pattern}" />
+            <artifact pattern="${springrepo.url}/libraries/release/${springrepo.pattern}" />
+        </url>
+        <url name="springrepo.libraries.external" cache="springrepo">
+            <ivy pattern="${springrepo.url}/libraries/external/${springrepo.pattern}" />
+            <artifact pattern="${springrepo.url}/libraries/external/${springrepo.pattern}" />
+        </url>
+        <chain name="springrepo" returnFirst="true" cache="springrepo">
+            <resolver ref="springrepo.bundles.release" />
+            <resolver ref="springrepo.bundles.external" />
+            <resolver ref="springrepo.libraries.release" />
+            <resolver ref="springrepo.libraries.external" />
+        </chain>
+
+        <ibiblio name="jboss" root="http://repository.jboss.org/nexus/content/groups/public/" m2compatible="true" />
+
+        <ibiblio name="codehaus" root="http://repository.codehaus.org/" m2compatible="true" />
+
+        <ibiblio name="sonatype-oss" root="http://oss.sonatype.org/content/repositories/releases/" m2compatible="true" />
+
+        <chain name="all" returnFirst="true">
+            <resolver ref="maven-central" />
+            <resolver ref="javanet" />
+            <resolver ref="springrepo" />
+            <resolver ref="jboss" />
+            <resolver ref="codehaus" />
+            <resolver ref="sonatype-oss" />
+        </chain>
+
+    </resolvers>
+
+</ivysettings>

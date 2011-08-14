@@ -1,18 +1,19 @@
 package org.hibnet.elasticlogger.http;
 
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.velocity.Template;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.elasticsearch.common.netty.buffer.ChannelBuffer;
-import org.elasticsearch.common.netty.buffer.ChannelBuffers;
+import org.eclipse.jetty.server.Request;
 
 public class TemplateRenderer {
 
@@ -32,17 +33,9 @@ public class TemplateRenderer {
         velocityEngine.init(config);
     }
 
-    public ChannelBuffer render(String templateName, Map<String, Object> bindings) {
-        Template template = velocityEngine.getTemplate(templateName);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(baos);
-        try {
-            template.merge(new VelocityContext(bindings), writer);
-        } finally {
-            writer.close();
-        }
-
-        return ChannelBuffers.copiedBuffer(baos.toByteArray());
+    public void render(Request baseRequest, HttpServletResponse response, String templateName, Map<String, Object> bindings)
+            throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, IOException {
+        baseRequest.setHandled(true);
+        velocityEngine.mergeTemplate(templateName, "UTF-8", new VelocityContext(bindings), response.getWriter());
     }
 }

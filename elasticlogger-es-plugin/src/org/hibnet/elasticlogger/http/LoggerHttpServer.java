@@ -59,7 +59,7 @@ import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.http.BindHttpException;
 import org.elasticsearch.transport.BindTransportException;
 
-public class HttpServer extends AbstractLifecycleComponent<HttpServer> {
+public class LoggerHttpServer extends AbstractLifecycleComponent<LoggerHttpServer> {
 
     private final NetworkService networkService;
 
@@ -78,7 +78,7 @@ public class HttpServer extends AbstractLifecycleComponent<HttpServer> {
     private OpenChannelsHandler serverOpenChannels;
 
     @Inject
-    public HttpServer(Settings settings, NetworkService networkService) {
+    public LoggerHttpServer(Settings settings, NetworkService networkService) {
         super(settings);
         this.networkService = networkService;
         this.blockingServer = settings.getAsBoolean("http.blocking_server",

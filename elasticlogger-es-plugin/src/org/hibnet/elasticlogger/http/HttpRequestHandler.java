@@ -28,9 +28,11 @@ import org.elasticsearch.common.netty.channel.SimpleChannelUpstreamHandler;
 @ChannelHandler.Sharable
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 
-    private final HttpServer httpServer;
+    private final LoggerHttpServer httpServer;
 
-    public HttpRequestHandler(HttpServer httpServer) {
+    private final TemplateRenderer templateRenderer = new TemplateRenderer();
+
+    public HttpRequestHandler(LoggerHttpServer httpServer) {
         this.httpServer = httpServer;
     }
 

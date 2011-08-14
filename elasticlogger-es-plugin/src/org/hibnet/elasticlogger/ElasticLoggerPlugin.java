@@ -1,6 +1,11 @@
 package org.hibnet.elasticlogger;
 
+import java.util.Collection;
+
+import org.elasticsearch.common.collect.Lists;
+import org.elasticsearch.common.component.LifecycleComponent;
 import org.elasticsearch.plugins.AbstractPlugin;
+import org.hibnet.elasticlogger.http.LoggerHttpServer;
 
 public class ElasticLoggerPlugin extends AbstractPlugin {
 
@@ -14,4 +19,10 @@ public class ElasticLoggerPlugin extends AbstractPlugin {
         return "Web frontend of indexed java logs";
     }
 
+    @Override
+    public Collection<Class<? extends LifecycleComponent>> services() {
+        Collection<Class<? extends LifecycleComponent>> services = Lists.newArrayList();
+        services.add(LoggerHttpServer.class);
+        return services;
+    }
 }

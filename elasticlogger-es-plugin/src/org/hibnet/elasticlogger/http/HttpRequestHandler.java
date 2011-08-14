@@ -19,11 +19,15 @@
 
 package org.hibnet.elasticlogger.http;
 
+import org.elasticsearch.common.netty.buffer.ChannelBuffer;
+import org.elasticsearch.common.netty.channel.ChannelFuture;
+import org.elasticsearch.common.netty.channel.ChannelFutureListener;
 import org.elasticsearch.common.netty.channel.ChannelHandler;
 import org.elasticsearch.common.netty.channel.ChannelHandlerContext;
 import org.elasticsearch.common.netty.channel.ExceptionEvent;
 import org.elasticsearch.common.netty.channel.MessageEvent;
 import org.elasticsearch.common.netty.channel.SimpleChannelUpstreamHandler;
+import org.elasticsearch.common.netty.handler.codec.http.HttpRequest;
 
 @ChannelHandler.Sharable
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
@@ -38,6 +42,10 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+        HttpRequest request = (HttpRequest) e.getMessage();
+        ChannelBuffer buffer = templateRenderer.render("index.html", null);
+        ChannelFuture f = e.getChannel().write(buffer);
+        f.addListener(ChannelFutureListener.CLOSE);
         super.messageReceived(ctx, e);
     }
 

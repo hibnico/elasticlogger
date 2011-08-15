@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <link rel='stylesheet' type='text/css' href='index.css' />
+        <link rel='stylesheet' type='text/css' href='elasticlogger.css' />
     </head>
     <body>
         <table>
@@ -10,38 +10,17 @@
                 <td>
                     ElasticLogger
                 </td>
-                <td>
-                    <form method="post">
-                        <input type="text" name="query" size="200" />
-                        <input type="submit" value="OK" />
-                    </form>
-                    <a onclick="tail(); return false;">TAIL</a>
-                </td>
             </tr>
             <tr>
                 <td>
                 </td>
                 <td>
-                    <table>
-                        <tr>
-                            <th>Date</th>
-                            <th>Thread</th>
-                            <th>Level</th>
-                            <th>Logger</th>
-                            <th>Marker</th>
-                            <th>Message</th>
-                            <th>Stacktrace</th>
-                            <th>MDC</th>
-                        </tr>
-                        <tr>
-                            <td>2011-07-28 13:43:76.765</td>
-                            <td>main</td>
-                            <td>INFO</td>
-                            <td>INFO</td>
-                            <td>INFO</td>
-                            <td>INFO</td>
-                        </tr>
-                    </table>
+                    Available indices:
+                    <ul>
+                        #foreach($index in $indicesStatusResponse.indices.entrySet())
+                            <li><a href="/$index.key/">$index.key</a> ($index.value.docs.numDocs documents)</li>
+                        #end
+                    </ul>
                 </td>
             </tr>
         </table>

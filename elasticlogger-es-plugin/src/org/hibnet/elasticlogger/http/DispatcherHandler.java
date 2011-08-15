@@ -35,6 +35,7 @@ public class DispatcherHandler extends AbstractHandlerContainer {
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setBaseResource(Resource.newClassPathResource("/org/hibnet/elasticlogger/http/resources/"));
         handlers.put(endsWith(".css"), resourceHandler);
+        handlers.put(endsWith(".png"), resourceHandler);
 
         SearchHandler searchHandler = new SearchHandler(transportSearchAction, templateRenderer);
         handlers.put(regexp("/([a-zA-Z][a-zA-Z0-9]*)/"), searchHandler);

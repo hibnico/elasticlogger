@@ -36,6 +36,7 @@ public class TemplateRenderer {
     public void render(Request baseRequest, HttpServletResponse response, String templateName, Map<String, Object> bindings)
             throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, IOException {
         baseRequest.setHandled(true);
-        velocityEngine.mergeTemplate(templateName, "UTF-8", new VelocityContext(bindings), response.getWriter());
+        bindings.put("content_template", templateName);
+        velocityEngine.mergeTemplate("layout.html", "UTF-8", new VelocityContext(bindings), response.getWriter());
     }
 }

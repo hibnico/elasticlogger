@@ -1,28 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <link rel='stylesheet' type='text/css' href='elasticlogger.css' />
-    </head>
-    <body>
-        <table>
-            <tr>
-                <td>
-                    ElasticLogger
-                </td>
-            </tr>
-            <tr>
-                <td>
-                </td>
-                <td>
-                    Available indices:
-                    <ul>
-                        #foreach($index in $indicesStatusResponse.indices.entrySet())
-                            <li><a href="/$index.key/">$index.key</a> ($index.value.docs.numDocs documents)</li>
-                        #end
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </body>
-</html>
+
+<div class="indices">
+    Available indices:
+    <ul>
+        #foreach($index in $indicesStatusResponse.indices.entrySet())
+            <li><a href="/$index.key/">$index.key</a> ($index.value.docs.numDocs documents)</li>
+        #end
+    </ul>
+</div>

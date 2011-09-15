@@ -1,0 +1,36 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#createIndexForm #name").defaultvalue("elasticlogger");
+        $("#createIndexForm #type").defaultvalue("log");
+    });
+</script>
+<div class="indices">
+    <h2>Available indices</h2>
+    #if ($indicesStatusResponse.indices.isEmpty())
+        <i>None</i>
+    #else
+    <ul>
+        #foreach($index in $indicesStatusResponse.indices.entrySet())
+            <li><a href="/$index.key/">$index.key</a> ($index.value.docs.numDocs documents)</li>
+        #end
+    </ul>
+    #end
+    <hr />
+    <h2>Create an index</h2>
+    <form id="createIndexForm">
+        <table>
+            <tr>
+                <td>Name: </td>
+                <td><input id="name" type="text" name="index" /></td>
+            </tr>
+            <tr>
+                <td>Type: </td>
+                <td><input id="type" type="text" name="type" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="text-align: right;"><input type="submit" value="Create" /></td>
+            </tr>
+        </table>
+    </form>
+</div>

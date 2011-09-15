@@ -1,9 +1,0 @@
-
-<div class="indices">
-    Available indices:
-    <ul>
-        #foreach($index in $indicesStatusResponse.indices.entrySet())
-            <li><a href="/$index.key/">$index.key</a> ($index.value.docs.numDocs documents)</li>
-        #end
-    </ul>
-</div>

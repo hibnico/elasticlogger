@@ -8,7 +8,7 @@
 	</appender>
 
     <appender name="ELASTICLOGGER" class="org.hibnet.elasticlogger.ElasticLoggerAppender">
-        <clusterName>elasticsearch-Nico</clusterName>
+        <clusterName>elasticlogger</clusterName>
     </appender>
 
 	<root level="INFO">

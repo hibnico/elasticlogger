@@ -1,0 +1,3 @@
+# Cluster Settings
+cluster:
+  name: elasticlogger

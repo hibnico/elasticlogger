@@ -18,17 +18,16 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandlerContainer;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
-import org.elasticsearch.action.admin.indices.status.TransportIndicesStatusAction;
-import org.elasticsearch.action.search.TransportSearchAction;
+import org.elasticsearch.client.Client;
 
 public class DispatcherHandler extends AbstractHandlerContainer {
 
     private Map<URIMatcher, Handler> handlers = new LinkedHashMap<URIMatcher, Handler>();
 
-    public DispatcherHandler(TransportSearchAction transportSearchAction, TransportIndicesStatusAction transportIndicesStatusAction) {
+    public DispatcherHandler(Client client) {
         TemplateRenderer templateRenderer = new TemplateRenderer();
 
-        IndexHandler indexHandler = new IndexHandler(transportIndicesStatusAction,  templateRenderer);
+        IndexHandler indexHandler = new IndexHandler(client, templateRenderer);
         handlers.put(eq("/"), indexHandler);
         handlers.put(eq("/index.html"), indexHandler);
 
@@ -37,7 +36,7 @@ public class DispatcherHandler extends AbstractHandlerContainer {
         handlers.put(endsWith(".css"), resourceHandler);
         handlers.put(endsWith(".png"), resourceHandler);
 
-        SearchHandler searchHandler = new SearchHandler(transportSearchAction, templateRenderer);
+        SearchHandler searchHandler = new SearchHandler(client, templateRenderer);
         handlers.put(regexp("/([a-zA-Z][a-zA-Z0-9]*)/"), searchHandler);
         handlers.put(regexp("/([a-zA-Z][a-zA-Z0-9]*)/index\\.html"), searchHandler);
     }

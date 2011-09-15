@@ -12,7 +12,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.TransportSearchAction;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -20,10 +20,10 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 public class SearchHandler extends AbstractHandler {
 
     private final TemplateRenderer templateRenderer;
-    private final TransportSearchAction transportSearchAction;
+    private final Client client;
 
-    public SearchHandler(TransportSearchAction transportSearchAction, TemplateRenderer templateRenderer) {
-        this.transportSearchAction = transportSearchAction;
+    public SearchHandler(Client client, TemplateRenderer templateRenderer) {
+        this.client = client;
         this.templateRenderer = templateRenderer;
     }
 
@@ -52,7 +52,7 @@ public class SearchHandler extends AbstractHandler {
         builder.query(querybuidler);
 
         SearchRequest searchRequest = new SearchRequest(new String[] { indexName }, builder.buildAsBytes());
-        SearchResponse searchResponse = transportSearchAction.execute(searchRequest).actionGet();
+        SearchResponse searchResponse = client.search(searchRequest).actionGet();
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("indexName", indexName);

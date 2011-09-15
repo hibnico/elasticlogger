@@ -25,8 +25,7 @@ import java.net.InetSocketAddress;
 
 import org.eclipse.jetty.server.Server;
 import org.elasticsearch.ElasticSearchException;
-import org.elasticsearch.action.admin.indices.status.TransportIndicesStatusAction;
-import org.elasticsearch.action.search.TransportSearchAction;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.component.AbstractLifecycleComponent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.network.NetworkService;
@@ -37,23 +36,19 @@ public class HttpServer extends AbstractLifecycleComponent<HttpServer> {
 
     private final NetworkService networkService;
 
-    private final TransportSearchAction transportSearchAction;
-
-    private final TransportIndicesStatusAction transportIndicesStatusAction;
-
     private int port;
     private String bindHost;
     private String publishHost;
 
     private Server server;
 
+    private final Client client;
+
     @Inject
-    public HttpServer(Settings settings, NetworkService networkService, TransportSearchAction transportSearchAction,
-            TransportIndicesStatusAction transportIndicesStatusAction) {
+    public HttpServer(Settings settings, NetworkService networkService, Client client) {
         super(settings);
         this.networkService = networkService;
-        this.transportSearchAction = transportSearchAction;
-        this.transportIndicesStatusAction = transportIndicesStatusAction;
+        this.client = client;
         this.port = Integer.parseInt(componentSettings.get("port", settings.get("http.port", "9800")));
         this.bindHost = componentSettings.get("bind_host", settings.get("http.bind_host", settings.get("http.host")));
         this.publishHost = componentSettings.get("publish_host",
@@ -72,7 +67,7 @@ public class HttpServer extends AbstractLifecycleComponent<HttpServer> {
         InetSocketAddress bindAdress = new InetSocketAddress(hostAddress, port);
         server = new Server(bindAdress);
 
-        server.setHandler(new DispatcherHandler(transportSearchAction, transportIndicesStatusAction));
+        server.setHandler(new DispatcherHandler(client));
 
         try {
             server.start();

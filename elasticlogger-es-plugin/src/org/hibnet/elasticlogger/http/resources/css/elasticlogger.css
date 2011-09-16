@@ -50,6 +50,15 @@ html,body {
 	margin-left: 10px;
 }
 
+.defaultValue {
+	font-style: italic;
+	color: #222222;
+}
+
+#createIndexError {
+    color: red;
+}
+
 /* search.html */
 .input {
 	background-color: #E0E0E0;

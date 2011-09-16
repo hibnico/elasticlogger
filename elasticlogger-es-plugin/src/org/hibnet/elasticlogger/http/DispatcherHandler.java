@@ -19,6 +19,11 @@ import org.eclipse.jetty.server.handler.AbstractHandlerContainer;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.elasticsearch.client.Client;
+import org.hibnet.elasticlogger.http.index.CreateIndexHandler;
+import org.hibnet.elasticlogger.http.index.DropIndexHandler;
+import org.hibnet.elasticlogger.http.index.IndexHandler;
+import org.hibnet.elasticlogger.http.search.SearchHandler;
+import org.hibnet.elasticlogger.http.templates.TemplateRenderer;
 
 public class DispatcherHandler extends AbstractHandlerContainer {
 
@@ -30,11 +35,14 @@ public class DispatcherHandler extends AbstractHandlerContainer {
         IndexHandler indexHandler = new IndexHandler(client, templateRenderer);
         handlers.put(eq("/"), indexHandler);
         handlers.put(eq("/index.html"), indexHandler);
+        handlers.put(eq("/createIndex"), new CreateIndexHandler(client));
+        handlers.put(eq("/dropIndex"), new DropIndexHandler(client));
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setBaseResource(Resource.newClassPathResource("/org/hibnet/elasticlogger/http/resources/"));
         handlers.put(endsWith(".css"), resourceHandler);
         handlers.put(endsWith(".png"), resourceHandler);
+        handlers.put(endsWith(".js"), resourceHandler);
 
         SearchHandler searchHandler = new SearchHandler(client, templateRenderer);
         handlers.put(regexp("/([a-zA-Z][a-zA-Z0-9]*)/"), searchHandler);

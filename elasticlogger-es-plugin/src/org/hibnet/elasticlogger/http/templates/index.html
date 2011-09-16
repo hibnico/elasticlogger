@@ -3,21 +3,58 @@
         $("#createIndexForm #name").defaultvalue("elasticlogger");
         $("#createIndexForm #type").defaultvalue("log");
     });
+    var nbIndex = $indicesStatusResponse.indices.size();
+    function createIndex() {
+        var name = $("#createIndexForm #name").val();
+        var type = $("#createIndexForm #type").val();
+        if (!name) {
+            name = "";
+        }
+        if (!type) {
+        	type = "";
+        }
+        $("#createIndexError").hide();
+        $.post("/createIndex", { "name": name, "type": type }, function (data) {
+            if (data.ok) {
+            	nbIndex = nbIndex + 1;
+                $("#indexList").append("<li id='index_" + name + "' style='display: none'><a href='/" + name + "/'>" + name + "</a> (0 documents) (<a href='#' onclick='dropIndex(\"" + name + "\"); return false;'>drop</a>)</li>");
+                $("#noneIndex").slideUp();
+                $("#index_" + name).slideDown();
+            } else {
+                $("#createIndexError").html("Error creating the index: " + data.error + "<br /><pre>" + data.stacktrace + "</pre>");
+                $("#createIndexError").slideDown();
+            }
+        });
+    }
+    function dropIndex(name) {
+        $("#createIndexError").hide();
+        $.post("/dropIndex", { "name": name }, function (data) {
+            if (data.ok) {
+                nbIndex = nbIndex - 1;
+                if (nbIndex == 0) {
+                    $("#noneIndex").slideDown();
+                }
+                $("#index_" + name).slideUp(function() {
+                	$("#index_" + name).remove();
+                });
+            } else {
+                $("#createIndexError").text("Error droping the index: " + data.error + "<pre>" + data.stacktrace + "</pre>");
+                $("#createIndexError").slideDown();
+            }
+        });
+    }
 </script>
 <div class="indices">
     <h2>Available indices</h2>
-    #if ($indicesStatusResponse.indices.isEmpty())
-        <i>None</i>
-    #else
-    <ul>
+    <ul id="indexList">
+        <li id="noneIndex" #if (!$indicesStatusResponse.indices.isEmpty()) style="display:none"#end>None</li>
         #foreach($index in $indicesStatusResponse.indices.entrySet())
-            <li><a href="/$index.key/">$index.key</a> ($index.value.docs.numDocs documents)</li>
+            <li id="index_$index.key"><a href="/$index.key/">$index.key</a> ($index.value.docs.numDocs documents) (<a href="#" onclick="dropIndex('$index.key'); return false;">drop</a>)</li>
         #end
     </ul>
-    #end
     <hr />
     <h2>Create an index</h2>
-    <form id="createIndexForm">
+    <form id="createIndexForm" onsubmit="createIndex(); return false;">
         <table>
             <tr>
                 <td>Name: </td>
@@ -33,4 +70,6 @@
             </tr>
         </table>
     </form>
+    <div id="createIndexError" style="display: none">
+    </div>
 </div>

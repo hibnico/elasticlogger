@@ -1,4 +1,4 @@
-package org.hibnet.elasticlogger.http;
+package org.hibnet.elasticlogger.http.search;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,6 +16,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.hibnet.elasticlogger.http.URIMatcher;
+import org.hibnet.elasticlogger.http.templates.TemplateRenderer;
 
 public class SearchHandler extends AbstractHandler {
 

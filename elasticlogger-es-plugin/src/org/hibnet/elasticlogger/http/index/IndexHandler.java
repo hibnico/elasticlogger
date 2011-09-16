@@ -1,4 +1,4 @@
-package org.hibnet.elasticlogger.http;
+package org.hibnet.elasticlogger.http.index;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,6 +13,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusResponse;
 import org.elasticsearch.client.Client;
+import org.hibnet.elasticlogger.http.templates.TemplateRenderer;
 
 public class IndexHandler extends AbstractHandler {
 

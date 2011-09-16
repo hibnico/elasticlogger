@@ -1,4 +1,4 @@
-package org.hibnet.elasticlogger.http.templates;
+package org.hibnet.elasticlogger.http;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ public class TemplateRenderer {
     public static final class TemplateLoader extends ClasspathResourceLoader {
         @Override
         public InputStream getResourceStream(String name) throws ResourceNotFoundException {
-            return super.getResourceStream("/org/hibnet/elasticlogger/http/templates/" + name);
+            return super.getResourceStream("/org/hibnet/elasticlogger/http/" + name);
         }
     }
 

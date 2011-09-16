@@ -16,8 +16,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.hibnet.elasticlogger.http.TemplateRenderer;
 import org.hibnet.elasticlogger.http.URIMatcher;
-import org.hibnet.elasticlogger.http.templates.TemplateRenderer;
 
 public class SearchHandler extends AbstractHandler {
 
@@ -64,7 +64,7 @@ public class SearchHandler extends AbstractHandler {
         vars.put("query", query);
         vars.put("searchResponse", searchResponse);
 
-        templateRenderer.render(baseRequest, response, "search.html", vars);
+        templateRenderer.render(baseRequest, response, "search/search.html", vars);
     }
 
     private int getIntParameter(HttpServletRequest request, String name, int defaultValue) {

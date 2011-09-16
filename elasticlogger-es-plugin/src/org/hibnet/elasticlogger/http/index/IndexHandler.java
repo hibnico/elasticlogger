@@ -13,7 +13,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusResponse;
 import org.elasticsearch.client.Client;
-import org.hibnet.elasticlogger.http.templates.TemplateRenderer;
+import org.hibnet.elasticlogger.http.TemplateRenderer;
 
 public class IndexHandler extends AbstractHandler {
 
@@ -35,7 +35,7 @@ public class IndexHandler extends AbstractHandler {
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("indicesStatusResponse", indicesStatusResponse);
 
-        templateRenderer.render(baseRequest, response, "index.html", vars);
+        templateRenderer.render(baseRequest, response, "index/index.html", vars);
     }
 
 }

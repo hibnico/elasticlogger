@@ -23,7 +23,6 @@ import org.hibnet.elasticlogger.http.index.CreateIndexHandler;
 import org.hibnet.elasticlogger.http.index.DropIndexHandler;
 import org.hibnet.elasticlogger.http.index.IndexHandler;
 import org.hibnet.elasticlogger.http.search.SearchHandler;
-import org.hibnet.elasticlogger.http.templates.TemplateRenderer;
 
 public class DispatcherHandler extends AbstractHandlerContainer {
 

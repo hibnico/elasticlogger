@@ -37,5 +37,4 @@ public class IndexHandler extends AbstractHandler {
 
         templateRenderer.render(baseRequest, response, "index/index.html", vars);
     }
-
 }

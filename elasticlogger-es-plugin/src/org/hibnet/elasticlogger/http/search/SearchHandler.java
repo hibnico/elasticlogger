@@ -2,6 +2,7 @@ package org.hibnet.elasticlogger.http.search;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -64,6 +65,8 @@ public class SearchHandler extends AbstractHandler {
         vars.put("query", query);
         vars.put("searchResponse", searchResponse);
 
+        addBreadcrumb(vars, "/" + indexName + "/", "Index '" + indexName + "'");
+
         templateRenderer.render(baseRequest, response, "search/search.html", vars);
     }
 
@@ -85,5 +88,13 @@ public class SearchHandler extends AbstractHandler {
             return defaultValue;
         }
         return value;
+    }
+
+    private void addBreadcrumb(Map<String, Object> vars, String... breadcrumb) {
+        Map<String, String> breadcrumbs = new LinkedHashMap<String, String>();
+        for (int i = 0; i < breadcrumb.length / 2; i++) {
+            breadcrumbs.put(breadcrumb[2 * i], breadcrumb[2 * i + 1]);
+        }
+        vars.put("breadcrumbs", breadcrumbs);
     }
 }

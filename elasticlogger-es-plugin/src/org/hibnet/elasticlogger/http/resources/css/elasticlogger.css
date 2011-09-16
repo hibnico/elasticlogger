@@ -12,7 +12,7 @@ html,body {
 }
 
 .header {
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 .header .banner {
@@ -27,6 +27,11 @@ html,body {
 	padding-left: 20px;
 	margin: 5px;
 	background-color: #687FC1;
+}
+
+.breadcrumb {
+    margin-left: 30px;
+    margin-bottom: 5px;
 }
 
 .footer {

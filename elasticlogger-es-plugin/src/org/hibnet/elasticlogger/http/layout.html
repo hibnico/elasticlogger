@@ -13,6 +13,12 @@
 	            Elasticlogger
 	        </div>
         </div>
+        <div class="breadcrumb">
+            &gt; <a href="/">Index list</a>
+            #foreach($breadcrumb in $breadcrumbs.entrySet())
+                &gt; <a href="$breadcrumb.key">$breadcrumb.value</a>
+            #end
+        </div>
         <div class="content">
             #parse($content_template)
         </div>

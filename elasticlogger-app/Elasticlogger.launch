@@ -8,5 +8,5 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.elasticsearch.bootstrap.ElasticSearch"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="elasticlogger-app"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Des.path.home=${project_loc:/elasticlogger-app}&#10;-Des-foreground=yes"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Delasticsearch&#10;-Des.path.home=${project_loc:/elasticlogger-app}&#10;-Des-foreground=yes"/>
 </launchConfiguration>

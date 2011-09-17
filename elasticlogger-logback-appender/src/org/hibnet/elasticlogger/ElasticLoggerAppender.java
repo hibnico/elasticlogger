@@ -2,11 +2,14 @@ package org.hibnet.elasticlogger;
 
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
+import java.io.IOException;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.node.Node;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -27,7 +30,7 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
     private volatile Client client;
 
-    private Queue<String> queue;
+    private Queue<XContentBuilder> queue;
 
     public void setClusterName(String clusterName) {
         this.clusterName = clusterName;
@@ -47,7 +50,7 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
     @Override
     public void start() {
-        queue = new LinkedBlockingQueue<String>(queueSize);
+        queue = new LinkedBlockingQueue<XContentBuilder>(queueSize);
 
         // do make the make the logger (and probably the application too) wait for elasticsearch to boot
         new Thread(new Runnable() {
@@ -78,33 +81,51 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
     @Override
     protected void append(ILoggingEvent event) {
-        JsonBuilder jsonBuilder = new JsonBuilder();
-        jsonBuilder.add("level", event.getLevel());
-        jsonBuilder.add("message", event.getMessage());
-        jsonBuilder.add("marker", event.getMarker());
-        jsonBuilder.add("loggerName", event.getLoggerName());
-        if (event.getMdc() != null) {
-            for (Entry<String, String> mdcEntry : event.getMdc().entrySet()) {
-                jsonBuilder.add("mdc_" + mdcEntry.getKey(), mdcEntry.getValue());
+        XContentBuilder jsonBuilder;
+        try {
+            jsonBuilder = XContentFactory.jsonBuilder();
+            jsonBuilder.startObject();
+            jsonBuilder.field("timeStamp", Long.toString(event.getTimeStamp()));
+            if (event.getLevel() != null) {
+                jsonBuilder.field("level", event.getLevel());
             }
+            if (event.getMessage() != null) {
+                jsonBuilder.field("message", event.getMessage());
+            }
+            if (event.getLoggerName() != null) {
+                jsonBuilder.field("loggerName", event.getLoggerName());
+            }
+            if (event.getThreadName() != null) {
+                jsonBuilder.field("threadName", event.getThreadName());
+            }
+            if (event.getMarker() != null) {
+                jsonBuilder.field("marker", event.getMarker());
+            }
+            if (event.getThrowableProxy() != null) {
+                jsonBuilder.field("stackTrace", ThrowableProxyUtil.asString(event.getThrowableProxy()));
+            }
+            if (event.getMdc() != null) {
+                for (Entry<String, String> mdcEntry : event.getMdc().entrySet()) {
+                    jsonBuilder.field("mdc_" + mdcEntry.getKey(), mdcEntry.getValue());
+                }
+            }
+        } catch (IOException e) {
+            addError("Error while writing json: " + e.getMessage());
+            return;
         }
-        jsonBuilder.add("threadName", event.getThreadName());
-        jsonBuilder.add("timeStamp", Long.toString(event.getTimeStamp()));
-        jsonBuilder.add("stackTrace", ThrowableProxyUtil.asString(event.getThrowableProxy()));
 
-        String json = jsonBuilder.getResult();
         if (client == null) { // the client maybe not be ready yet
-            boolean added = queue.add(json);
+            boolean added = queue.add(jsonBuilder);
             if (!added) {
                 addError("ElasticLoggerAppender queue is full, too much events while waiting the"
                         + " elasticsearch client to boot. Some events are then lost.");
             }
         } else {
-            doIndex(json);
+            doIndex(jsonBuilder);
         }
     }
 
-    private void doIndex(String json) {
+    private void doIndex(XContentBuilder json) {
         client.prepareIndex(indexName, indexType).setSource(json).execute();
         // not that we don't wait for the response, but this is nice, we don't want to have the main thread wait for
         // some remote logging indexation

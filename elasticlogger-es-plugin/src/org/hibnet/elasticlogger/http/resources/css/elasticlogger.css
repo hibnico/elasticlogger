@@ -64,18 +64,15 @@ html,body {
     color: red;
 }
 
-/* search.html */
-.input {
+/* logs.html */
+#searchInput {
 	background-color: #E0E0E0;
 	height: 40px;
-	padding-top: 5px;
+	padding-top: 8px;
+	padding-left: 20px;
 }
 
-.input form {
-	margin-left: 50px;
-}
-
-.input #query {
+#searchInput #query {
 	height: 21px;
 	font-size: 14px;
 	line-height: 21px;
@@ -85,7 +82,7 @@ html,body {
 	border: 1px solid;
 }
 
-.input #submit {
+#searchInput #submit {
 	height: 21px;
 	width: 21px;
 	border-radius: 4px;
@@ -95,18 +92,37 @@ html,body {
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	background-color: white;
+    color: black;
+    padding: 3px;
+    margin-left: 10px;
+    margin-top: 5px;
 }
 
-.input #tail {
+#searchInput #tail {
 	font-family: monospace;
 	font-size: 14px;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	border: 1px solid;
+	border: 1px solid black;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	background-color: white;
+    text-decoration: none;
+    color: black;
+    padding: 4px;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
+#searchInput a#tail:hover {
+    text-decoration: none;
+}
+
+#searchInput #connectionStatus {
+    float: right;
+    margin-top: 5px;
+    margin-right: 10px;
 }
 
 .results_header {
@@ -150,17 +166,17 @@ html,body {
     float: left;
 }
 
-.hits {
+#searchResults {
 	margin: 5px;
 }
 
-.hits table {
+#searchResults table {
 	width: 100%;
 	border: 1px solid;
 	border-collapse: collapse;
 }
 
-.hits table th {
+#searchResults table th {
 	border: 1px solid black;
 	padding: 3px;
 	font-weight: bold;
@@ -168,47 +184,51 @@ html,body {
 	color: white;
 }
 
-.hits table td {
+#searchResults table th.message {
+    width: 60%;
+}
+
+#searchResults table td {
 	border: 1px solid;
 	padding: 3px;
 }
 
-.hits table .even.TRACE {
+#searchResults table .even.TRACE {
     background-color: #dadada
 }
 
-.hits table .odd.TRACE {
+#searchResults table .odd.TRACE {
     background-color: #ffffff
 }
 
-.hits table .even.DEBUG {
+#searchResults table .even.DEBUG {
     background-color: #adc2db
 }
 
-.hits table .odd.DEBUG {
+#searchResults table .odd.DEBUG {
     background-color: #7aa2d4
 }
 
-.hits table .even.INFO {
+#searchResults table .even.INFO {
     background-color: #9cbc87
 }
 
-.hits table .odd.INFO {
+#searchResults table .odd.INFO {
     background-color: #84b95f
 }
 
-.hits table .even.WARN {
+#searchResults table .even.WARN {
     background-color: #dfb95f
 }
 
-.hits table .odd.WARN {
+#searchResults table .odd.WARN {
     background-color: #df9d00
 }
 
-.hits table .even.ERROR {
+#searchResults table .even.ERROR {
     background-color: #a04747
 }
 
-.hits table .odd.ERROR {
+#searchResults table .odd.ERROR {
     background-color: #a05d5d;
 }

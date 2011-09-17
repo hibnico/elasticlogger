@@ -85,7 +85,7 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
         try {
             jsonBuilder = XContentFactory.jsonBuilder();
             jsonBuilder.startObject();
-            jsonBuilder.field("timeStamp", Long.toString(event.getTimeStamp()));
+            jsonBuilder.field("timestamp", Long.toString(event.getTimeStamp()));
             if (event.getLevel() != null) {
                 jsonBuilder.field("level", event.getLevel());
             }
@@ -93,16 +93,16 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
                 jsonBuilder.field("message", event.getMessage());
             }
             if (event.getLoggerName() != null) {
-                jsonBuilder.field("loggerName", event.getLoggerName());
+                jsonBuilder.field("loggername", event.getLoggerName());
             }
             if (event.getThreadName() != null) {
-                jsonBuilder.field("threadName", event.getThreadName());
+                jsonBuilder.field("threadname", event.getThreadName());
             }
             if (event.getMarker() != null) {
                 jsonBuilder.field("marker", event.getMarker());
             }
             if (event.getThrowableProxy() != null) {
-                jsonBuilder.field("stackTrace", ThrowableProxyUtil.asString(event.getThrowableProxy()));
+                jsonBuilder.field("stacktrace", ThrowableProxyUtil.asString(event.getThrowableProxy()));
             }
             if (event.getMdc() != null) {
                 for (Entry<String, String> mdcEntry : event.getMdc().entrySet()) {

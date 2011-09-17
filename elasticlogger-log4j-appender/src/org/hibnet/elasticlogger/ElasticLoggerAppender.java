@@ -85,7 +85,7 @@ public class ElasticLoggerAppender extends AppenderSkeleton {
         try {
             jsonBuilder = XContentFactory.jsonBuilder();
             jsonBuilder.startObject();
-            jsonBuilder.field("timeStamp", Long.toString(event.getTimeStamp()));
+            jsonBuilder.field("timestamp", Long.toString(event.getTimeStamp()));
             if (event.getLevel() != null) {
                 jsonBuilder.field("level", event.getLevel());
             }
@@ -93,13 +93,13 @@ public class ElasticLoggerAppender extends AppenderSkeleton {
                 jsonBuilder.field("message", event.getMessage());
             }
             if (event.getLoggerName() != null) {
-                jsonBuilder.field("loggerName", event.getLoggerName());
+                jsonBuilder.field("loggername", event.getLoggerName());
             }
             if (event.getThreadName() != null) {
-                jsonBuilder.field("threadName", event.getThreadName());
+                jsonBuilder.field("threadname", event.getThreadName());
             }
             if (event.getThrowableStrRep() != null) {
-                jsonBuilder.field("stackTrace", Arrays.toString(event.getThrowableStrRep()));
+                jsonBuilder.field("stacktrace", Arrays.toString(event.getThrowableStrRep()));
             }
         } catch (IOException e) {
             System.err.println("Error while writing json: " + e.getMessage());

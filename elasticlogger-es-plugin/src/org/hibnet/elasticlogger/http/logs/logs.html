@@ -1,0 +1,130 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	if (!window.WebSocket) {
+		alert("You need a modern web brower which supports WebSockets in order to use this service.\nYou can find one there: http://www.google.com/chrome");
+	} else {
+		searchSocket.load();
+	}
+});
+
+searchSocket = {
+    _ws: null,
+    load: function() {
+    	var url = "ws:" + document.URL.substring(document.URL.indexOf("//"), document.URL.lastIndexOf("/")) + "/search";
+        this._ws = new WebSocket(url);
+        this._ws.onopen = this._onopen;
+        this._ws.onmessage = this._onmessage;
+        this._ws.onclose = this._onclose;
+    },
+    _onopen: function() {
+        $("#searchInput #connectionStatus").text("connected");
+        var date = new Date();
+        $("#searchInput #connectionStatus").attr("title", "at " + date.getHours() + "h" + date.getMinutes() + ":" + date.getSeconds() + "s");
+    },
+    _onclose: function() {
+        this._ws = null;
+        $("#searchInput #connectionStatus").text("disconnected");
+        var date = new Date();
+        $("#searchInput #connectionStatus").attr("title", "at " + date.getHours() + "h" + date.getMinutes() + ":" + date.getSeconds() + "s");
+        setTimeout("searchSocket.load()", 5000); // try to reconnect
+    },
+    _onmessage: function(m) {
+    	var searchResponse = $.parseJSON(m.data);
+    	$("#resultsMessage").text(searchResponse.hits.total + " logs found in " + searchResponse.took + " ms");
+    	showLogs(searchResponse.hits.hits);
+    },
+    send: function(data) {
+    	this._ws.send($.toJSON(data));
+    }
+}
+
+function launchSearch() {
+    var query = $("#searchInput #query").val();
+    var searchQuery = { "query": query };
+    searchSocket.send(searchQuery);
+}
+
+var tailSearchActive = false;
+
+function toggleTailSearch() {
+	tailSearchActive = !tailSearchActive;
+	if (tailSearchActive) {
+		tailSearch();
+	}
+}
+
+function tailSearch() {
+	launchSearch();
+    if (tailSearchActive) {
+        setTimeout("tailSearch()", 5000);
+    }
+}
+
+function showLogs(results) {
+	var searchResultsElement = $("#searchResults table");
+	var even = true;
+    for (var i = 0; i < results.length; i++) {
+        var log = results[i]._source;
+        var date = new Date();
+        date.setTime(log.timestamp);
+        var dateString = "";
+        dateString = dateString + (date.getDate() < 10 ? "0" : "") + date.getDate();
+        dateString = dateString + "/" + (date.getMonth() < 10 ? "0" : "") + date.getMonth();
+        dateString = dateString + "/" + date.getYear();
+        dateString = dateString + " " + (date.getHours() < 10 ? "0" : "") + date.getHours();
+        dateString = dateString + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
+        dateString = dateString + ":" + (date.getSeconds() < 10 ? "0" : "") + date.getSeconds();
+        searchResultsElement.append("<tr><tr id='" + results[i]._id + "' class='" + (even ? "even" : "odd") + " " + log.level + "'>"
+            + "<td>" + i + "</td><td>" + dateString + "</td><td>"
+            + log.threadname + "</td><td>" + log.level + "</td><td>"
+            + log.loggername + "</td><td>" + log.message + "</td></tr>");
+        even = !even;
+    }
+}
+
+</script>
+<div id="searchInput">
+      Search:
+      <input id="query" type="text" name="query" size="100" />
+      <a id="submit" href="#" onclick="launchSearch(); return false;"><img src="/img/search.png" /></a>
+      <a id="tail" href="#" onclick="toggleTailSearch(); return false;">tail -f</a>
+      <div id="connectionStatus"></div>
+</div>
+<div class="results">
+    <div class="results_header">
+        <div id="resultsMessage">
+        </div>
+        <div class="facets">
+            <ul>
+                <li>33 infos</li>
+                <li>42 warnings</li>
+            </ul>
+        </div>
+        <div class="facets">
+            <ul>
+                <li>3 main</li>
+                <li>42 jetty</li>
+            </ul>
+        </div>
+        <div class="facets">
+            <ul>
+                <li>33 org.elasticsearch.node</li>
+                <li>2 org.hibnet.elasticlogger.testapp.Main</li>
+            </ul>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+    <div id="searchResults">
+        <table>
+            <tr>
+                <th class="num"></th>
+                <th class="date">Date</th>
+                <th class="thread">Thread</th>
+                <th class="level">Level</th>
+                <th class="logger">Logger</th>
+                <th class="message">Message</th>
+            </tr>
+        </table>
+    </div>
+</div>

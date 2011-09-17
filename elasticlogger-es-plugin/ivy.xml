@@ -12,7 +12,9 @@
         <dependency org="org.apache.lucene" name="lucene-queries" rev="3.3.0" transitive="false" />
         <dependency org="org.apache.lucene" name="lucene-highlighter" rev="3.3.0" transitive="false" />
         <dependency org="org.eclipse.jetty" name="jetty-server" rev="7.4.5.v20110725" />
+        <dependency org="org.eclipse.jetty" name="jetty-websocket" rev="7.4.5.v20110725" />
         <dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="1.8.5" />
         <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.8.5" />
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.2" transitive="false" />
     </dependencies>
 </ivy-module>

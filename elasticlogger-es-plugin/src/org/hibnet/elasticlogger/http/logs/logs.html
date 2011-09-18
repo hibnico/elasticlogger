@@ -31,6 +31,7 @@ searchSocket = {
     _onmessage: function(m) {
     	var searchResponse = $.parseJSON(m.data);
     	$("#resultsMessage").text(searchResponse.hits.total + " logs found in " + searchResponse.took + " ms");
+    	emptyLogs();
     	showLogs(searchResponse.hits.hits);
     },
     send: function(data) {
@@ -60,8 +61,11 @@ function tailSearch() {
     }
 }
 
+function emptyLogs() {
+	$("#searchResults #searchResultsContent tr").remove();
+}
 function showLogs(results) {
-	var searchResultsElement = $("#searchResults table");
+	var searchResultsElement = $("#searchResults #searchResultsContent");
 	var even = true;
     for (var i = 0; i < results.length; i++) {
         var log = results[i]._source;
@@ -74,7 +78,7 @@ function showLogs(results) {
         dateString = dateString + " " + (date.getHours() < 10 ? "0" : "") + date.getHours();
         dateString = dateString + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
         dateString = dateString + ":" + (date.getSeconds() < 10 ? "0" : "") + date.getSeconds();
-        searchResultsElement.append("<tr><tr id='" + results[i]._id + "' class='" + (even ? "even" : "odd") + " " + log.level + "'>"
+        searchResultsElement.append("<tr id='" + results[i]._id + "' class='" + (even ? "even" : "odd") + " " + log.level + "'>"
             + "<td>" + i + "</td><td>" + dateString + "</td><td>"
             + log.threadname + "</td><td>" + log.level + "</td><td>"
             + log.loggername + "</td><td>" + log.message + "</td></tr>");
@@ -117,14 +121,18 @@ function showLogs(results) {
     </div>
     <div id="searchResults">
         <table>
-            <tr>
-                <th class="num"></th>
-                <th class="date">Date</th>
-                <th class="thread">Thread</th>
-                <th class="level">Level</th>
-                <th class="logger">Logger</th>
-                <th class="message">Message</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th class="num"></th>
+                    <th class="date">Date</th>
+                    <th class="thread">Thread</th>
+                    <th class="level">Level</th>
+                    <th class="logger">Logger</th>
+                    <th class="message">Message</th>
+                </tr>
+            </thead>
+            <tbody id="searchResultsContent">
+            </tbody>
         </table>
     </div>
 </div>

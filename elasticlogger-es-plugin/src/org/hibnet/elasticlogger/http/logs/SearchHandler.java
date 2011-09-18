@@ -14,6 +14,7 @@ import org.elasticsearch.client.action.search.SearchRequestBuilder;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.hibnet.elasticlogger.SimpleLogger;
@@ -78,14 +79,19 @@ public class SearchHandler extends WebSocketHandler {
     }
 
     private XContentBuilder search(String indexName, SearchQuery inputQuery) throws IOException {
-        BoolQueryBuilder query = QueryBuilders.boolQuery();
-        query.should(QueryBuilders.textPhrasePrefixQuery("message", inputQuery.query));
-        query.should(QueryBuilders.textPhrasePrefixQuery("loggername", inputQuery.query));
-        query.should(QueryBuilders.textPhrasePrefixQuery("threadname", inputQuery.query));
+        QueryBuilder query;
+        if (inputQuery.query == null || inputQuery.query.trim().length() == 0) {
+            query = QueryBuilders.matchAllQuery();
+        } else {
+            query = QueryBuilders.boolQuery();
+            ((BoolQueryBuilder) query).should(QueryBuilders.textPhrasePrefixQuery("message", inputQuery.query));
+            ((BoolQueryBuilder) query).should(QueryBuilders.textPhrasePrefixQuery("loggername", inputQuery.query));
+            ((BoolQueryBuilder) query).should(QueryBuilders.textPhrasePrefixQuery("threadname", inputQuery.query));
+        }
 
         SearchRequestBuilder search = client.prepareSearch(indexName);
         search.setQuery(query);
-        search.setSize(50);
+        search.setSize(20);
         search.addSort("timestamp", SortOrder.DESC);
         SearchResponse response = search.execute().actionGet();
         XContentBuilder builder = XContentFactory.jsonBuilder();

@@ -134,12 +134,19 @@ html,body {
 .facets {
 	float: left;
 	margin: 5px;
-	padding: 5px;
+	padding: 10px;
 	background-color : #E0E0E0;
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	background-color: #E0E0E0;
+}
+
+.facets ul {
+    padding-left: 25px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 5px;
 }
 
 .show_data {

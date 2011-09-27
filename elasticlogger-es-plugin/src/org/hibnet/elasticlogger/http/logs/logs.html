@@ -1,10 +1,63 @@
 <script type="text/javascript">
+var logTimelineChart;
 $(document).ready(function() {
 	if (!window.WebSocket) {
 		alert("You need a modern web brower which supports WebSockets in order to use this service.\nYou can find one there: http://www.google.com/chrome");
 	} else {
 		searchSocket.load();
 	}
+	logTimelineChart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'logsTimeline',
+            defaultSeriesType: 'column',
+            margin: [ 50, 50, 100, 80]
+         },
+         title: {
+            text: ''
+         },
+         xAxis: {
+            categories: [],
+            labels: {
+               rotation: -45,
+               align: 'right',
+               style: {
+                   font: 'normal 13px Verdana, sans-serif'
+               }
+            }
+         },
+         yAxis: {
+            min: 0,
+            title: {
+               text: ''
+            }
+         },
+         legend: {
+            enabled: false
+         },
+         tooltip: {
+            formatter: function() {
+               return this.y;
+            }
+         },
+         series: [{
+            name: 'Logs',
+            data: [],
+            dataLabels: {
+               enabled: true,
+               rotation: -90,
+               color: '#FFFFFF',
+               align: 'right',
+               x: -3,
+               y: 10,
+               formatter: function() {
+                  return this.y;
+               },
+               style: {
+                  font: 'normal 13px Verdana, sans-serif'
+               }
+            }         
+         }]
+      });
 });
 
 searchSocket = {
@@ -31,6 +84,8 @@ searchSocket = {
     _onmessage: function(m) {
     	var searchResponse = $.parseJSON(m.data);
     	$("#resultsMessage").text(searchResponse.hits.total + " logs found in " + searchResponse.took + " ms");
+    	emptyFacets();
+        showFacets(searchResponse.facets);
     	emptyLogs();
     	showLogs(searchResponse.hits.hits);
     },
@@ -86,6 +141,31 @@ function showLogs(results) {
     }
 }
 
+facetNames = {
+    "level" : "Levels",
+    "threadname" : "Thread Names",
+    "loggername" : "Logger Names"
+}
+function emptyFacets() {
+    $(".results .results_header #searchFacets").remove();
+}
+function showFacets(facets) {
+    var resultsHeaderElement = $(".results .results_header");
+    for (facet in facets) {
+    	if (facet == "dateHistogram") {
+    		chart.series[0].remove(false);
+    		var data = [];
+    		chart.series[0].setData(data, true);
+    	} else {
+            var facetValues = "";
+            for (var i = 0; i < facets[facet].terms.length; i++) {
+                facetValues = facetValues + "<li>" + facets[facet].terms[i].term + " (" + facets[facet].terms[i].count + ")</li>";
+            }
+            resultsHeaderElement.append("<div class='facets'>" + facetNames[facet] + ": <ul>" + facetValues + "</ul></div>");
+        }
+    }
+    resultsHeaderElement.append("<div class='clear'></div>");
+}
 </script>
 <div id="searchInput">
       Search:
@@ -96,28 +176,9 @@ function showLogs(results) {
 </div>
 <div class="results">
     <div class="results_header">
-        <div id="resultsMessage">
-        </div>
-        <div class="facets">
-            <ul>
-                <li>33 infos</li>
-                <li>42 warnings</li>
-            </ul>
-        </div>
-        <div class="facets">
-            <ul>
-                <li>3 main</li>
-                <li>42 jetty</li>
-            </ul>
-        </div>
-        <div class="facets">
-            <ul>
-                <li>33 org.elasticsearch.node</li>
-                <li>2 org.hibnet.elasticlogger.testapp.Main</li>
-            </ul>
-        </div>
-        <div class="clear">
-        </div>
+        <div id="resultsMessage"></div>
+        <div id="searchFacets"></div>
+        <div id="logsTimeline" style="width: 100%; height: 100px"></div>
     </div>
     <div id="searchResults">
         <table>

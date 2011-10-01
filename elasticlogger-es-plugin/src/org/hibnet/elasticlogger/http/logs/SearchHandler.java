@@ -99,7 +99,7 @@ public class SearchHandler extends WebSocketHandler {
         search.addFacet(FacetBuilders.termsFacet("level").field("level"));
         search.addFacet(FacetBuilders.termsFacet("threadname").field("threadname").size(5).order(ComparatorType.COUNT));
         search.addFacet(FacetBuilders.termsFacet("loggername").field("loggername").size(5).order(ComparatorType.COUNT));
-        //search.addFacet(FacetBuilders.dateHistogramFacet("datehistogram").field("timestamp").interval("day"));
+        search.addFacet(FacetBuilders.dateHistogramFacet("datehistogram").field("timestamp").interval("minute"));
         SearchResponse response = search.execute().actionGet();
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();

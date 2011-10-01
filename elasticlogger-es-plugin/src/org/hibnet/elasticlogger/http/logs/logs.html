@@ -1,16 +1,20 @@
 <script type="text/javascript">
 var logTimelineChart;
 $(document).ready(function() {
-	if (!window.WebSocket) {
-		alert("You need a modern web brower which supports WebSockets in order to use this service.\nYou can find one there: http://www.google.com/chrome");
-	} else {
-		searchSocket.load();
-	}
-	logTimelineChart = new Highcharts.Chart({
+    if (!window.WebSocket) {
+        alert("You need a modern web brower which supports WebSockets in order to use this service.\nYou can find one there: http://www.google.com/chrome");
+    } else {
+        searchSocket.load();
+    }
+    logTimelineChart = new Highcharts.Chart({
         chart: {
             renderTo: 'logsTimeline',
             defaultSeriesType: 'column',
-            margin: [ 50, 50, 100, 80]
+            marginTop: 10,
+            marginRight: 20,
+            marginBottom: 40,
+            marginLeft: 40,
+            height: 100
          },
          title: {
             text: ''
@@ -21,7 +25,12 @@ $(document).ready(function() {
                rotation: -45,
                align: 'right',
                style: {
-                   font: 'normal 13px Verdana, sans-serif'
+                   font: 'normal 10px Verdana, sans-serif'
+               },
+               formatter: function() {
+                   var date = new Date();
+                   date.setTime(this.value);
+                   return date.getHours() + "h" + date.getMinutes();
                }
             }
          },
@@ -39,31 +48,21 @@ $(document).ready(function() {
                return this.y;
             }
          },
-         series: [{
-            name: 'Logs',
-            data: [],
-            dataLabels: {
-               enabled: true,
-               rotation: -90,
-               color: '#FFFFFF',
-               align: 'right',
-               x: -3,
-               y: 10,
-               formatter: function() {
-                  return this.y;
-               },
-               style: {
-                  font: 'normal 13px Verdana, sans-serif'
-               }
-            }         
-         }]
+         colors: ['#687FC1'],
+         series: [{data: []}],
+         plotOptions: {
+        	 column: {
+        		 pointPadding: 0,
+        		 groupPadding: 0
+        	 }
+         }
       });
 });
 
 searchSocket = {
     _ws: null,
     load: function() {
-    	var url = "ws:" + document.URL.substring(document.URL.indexOf("//"), document.URL.lastIndexOf("/")) + "/search";
+        var url = "ws:" + document.URL.substring(document.URL.indexOf("//"), document.URL.lastIndexOf("/")) + "/search";
         this._ws = new WebSocket(url);
         this._ws.onopen = this._onopen;
         this._ws.onmessage = this._onmessage;
@@ -82,15 +81,15 @@ searchSocket = {
         setTimeout("searchSocket.load()", 5000); // try to reconnect
     },
     _onmessage: function(m) {
-    	var searchResponse = $.parseJSON(m.data);
-    	$("#resultsMessage").text(searchResponse.hits.total + " logs found in " + searchResponse.took + " ms");
-    	emptyFacets();
+        var searchResponse = $.parseJSON(m.data);
+        $("#resultsMessage").text(searchResponse.hits.total + " logs found in " + searchResponse.took + " ms");
+        emptyFacets();
         showFacets(searchResponse.facets);
-    	emptyLogs();
-    	showLogs(searchResponse.hits.hits);
+        emptyLogs();
+        showLogs(searchResponse.hits.hits);
     },
     send: function(data) {
-    	this._ws.send($.toJSON(data));
+        this._ws.send($.toJSON(data));
     }
 }
 
@@ -103,25 +102,26 @@ function launchSearch() {
 var tailSearchActive = false;
 
 function toggleTailSearch() {
-	tailSearchActive = !tailSearchActive;
-	if (tailSearchActive) {
-		tailSearch();
-	}
+    tailSearchActive = !tailSearchActive;
+    if (tailSearchActive) {
+        tailSearch();
+    }
 }
 
 function tailSearch() {
-	launchSearch();
+    launchSearch();
     if (tailSearchActive) {
         setTimeout("tailSearch()", 5000);
     }
 }
 
 function emptyLogs() {
-	$("#searchResults #searchResultsContent tr").remove();
+    $("#searchResults #searchResultsContent tr").remove();
 }
 function showLogs(results) {
-	var searchResultsElement = $("#searchResults #searchResultsContent");
-	var even = true;
+    $("#searchResults").show();
+    var searchResultsElement = $("#searchResults #searchResultsContent");
+    var even = true;
     for (var i = 0; i < results.length; i++) {
         var log = results[i]._source;
         var date = new Date();
@@ -147,16 +147,26 @@ facetNames = {
     "loggername" : "Logger Names"
 }
 function emptyFacets() {
-    $(".results .results_header #searchFacets").remove();
+    $(".results .results_header #searchFacets").replaceWith("<div id='searchFacets'></div>")
 }
 function showFacets(facets) {
-    var resultsHeaderElement = $(".results .results_header");
-    for (facet in facets) {
-    	if (facet == "dateHistogram") {
-    		chart.series[0].remove(false);
-    		var data = [];
-    		chart.series[0].setData(data, true);
-    	} else {
+	$("#logsTimeline").show();
+    var resultsHeaderElement = $(".results .results_header #searchFacets");
+    for (var facet in facets) {
+        if (facet == "datehistogram") {
+            logTimelineChart.series[0].remove(false);
+            var values = new Array();
+            var categories = new Array();
+            for (var i = 0; i < facets[facet].entries.length; i++) {
+                values.push(facets[facet].entries[i].count);
+                categories.push(facets[facet].entries[i].time);
+            }
+            logTimelineChart.addSeries({
+                data: values
+             });
+            logTimelineChart.xAxis[0].setCategories(categories);
+            logTimelineChart.xAxis[0].redraw();
+        } else {
             var facetValues = "";
             for (var i = 0; i < facets[facet].terms.length; i++) {
                 facetValues = facetValues + "<li>" + facets[facet].terms[i].term + " (" + facets[facet].terms[i].count + ")</li>";
@@ -178,9 +188,9 @@ function showFacets(facets) {
     <div class="results_header">
         <div id="resultsMessage"></div>
         <div id="searchFacets"></div>
-        <div id="logsTimeline" style="width: 100%; height: 100px"></div>
+        <div id="logsTimeline" style="width: 100%; height: 100px; display: none;"></div>
     </div>
-    <div id="searchResults">
+    <div id="searchResults" style="display: none;">
         <table>
             <thead>
                 <tr>

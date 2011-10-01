@@ -35,7 +35,7 @@ public class CreateIndexHandler extends AbstractJsonHandler<CreateIndexInput, Js
         addPropMapping(propMappings, "marker", "string", true, false);
         addPropMapping(propMappings, "loggername", "string", true, true);
         addPropMapping(propMappings, "threadname", "string", true, true);
-        addPropMapping(propMappings, "timestamp", "long", true, false);
+        addPropMapping(propMappings, "timestamp", "date", true, false);
         addPropMapping(propMappings, "stackTrace", "string", true, true);
         defaultMapping.put("properties", propMappings);
         defaultMapping.put("_source", Collections.singletonMap("enable", false));

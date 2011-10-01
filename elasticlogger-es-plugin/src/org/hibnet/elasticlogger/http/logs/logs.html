@@ -30,7 +30,7 @@ $(document).ready(function() {
                formatter: function() {
                    var date = new Date();
                    date.setTime(this.value);
-                   return date.getHours() + "h" + date.getMinutes();
+                   return DateFormatter.formatHour(date);
                }
             }
          },
@@ -51,13 +51,34 @@ $(document).ready(function() {
          colors: ['#687FC1'],
          series: [{data: []}],
          plotOptions: {
-        	 column: {
-        		 pointPadding: 0,
-        		 groupPadding: 0
-        	 }
+             column: {
+                 pointPadding: 0,
+                 groupPadding: 0
+             }
          }
       });
 });
+
+DateFormatter = {
+    formatDecimal: function(value) {
+        return (value < 10 ? "0" : "") + value;
+    },
+    formatHour: function(date) {
+        return this.formatDecimal(date.getHours()) + "h" + this.formatDecimal(date.getMinutes());
+    },
+    formatHourSeconds: function(date) {
+        return this.formatHour(date) + ":" + this.formatDecimal(date.getSeconds()) + "s";
+    },
+    formatDay: function(date) {
+        return this.formatDecimal(date.getDate()) + "/" + this.formatDecimal(date.getMonth());
+    },
+    formatDayYear: function(date) {
+        return this.formatDay(date) + "/" + date.getYear();
+    },
+    formatFullDate: function(date) {
+        return this.formatDayYear(date) + " " + this.formatHourSeconds(date);
+    }
+}
 
 searchSocket = {
     _ws: null,
@@ -71,13 +92,13 @@ searchSocket = {
     _onopen: function() {
         $("#searchInput #connectionStatus").text("connected");
         var date = new Date();
-        $("#searchInput #connectionStatus").attr("title", "at " + date.getHours() + "h" + date.getMinutes() + ":" + date.getSeconds() + "s");
+        $("#searchInput #connectionStatus").attr("title", "at " + DateFormatter.formatHourSeconds(date));
     },
     _onclose: function() {
         this._ws = null;
         $("#searchInput #connectionStatus").text("disconnected");
         var date = new Date();
-        $("#searchInput #connectionStatus").attr("title", "at " + date.getHours() + "h" + date.getMinutes() + ":" + date.getSeconds() + "s");
+        $("#searchInput #connectionStatus").attr("title", "at " + DateFormatter.formatHourSeconds(date));
         setTimeout("searchSocket.load()", 5000); // try to reconnect
     },
     _onmessage: function(m) {
@@ -109,8 +130,8 @@ function toggleTailSearch() {
 }
 
 function tailSearch() {
-    launchSearch();
     if (tailSearchActive) {
+        launchSearch();
         setTimeout("tailSearch()", 5000);
     }
 }
@@ -126,15 +147,8 @@ function showLogs(results) {
         var log = results[i]._source;
         var date = new Date();
         date.setTime(log.timestamp);
-        var dateString = "";
-        dateString = dateString + (date.getDate() < 10 ? "0" : "") + date.getDate();
-        dateString = dateString + "/" + (date.getMonth() < 10 ? "0" : "") + date.getMonth();
-        dateString = dateString + "/" + date.getYear();
-        dateString = dateString + " " + (date.getHours() < 10 ? "0" : "") + date.getHours();
-        dateString = dateString + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
-        dateString = dateString + ":" + (date.getSeconds() < 10 ? "0" : "") + date.getSeconds();
         searchResultsElement.append("<tr id='" + results[i]._id + "' class='" + (even ? "even" : "odd") + " " + log.level + "'>"
-            + "<td>" + i + "</td><td>" + dateString + "</td><td>"
+            + "<td>" + i + "</td><td>" + DateFormatter.formatFullDate(date) + "</td><td>"
             + log.threadname + "</td><td>" + log.level + "</td><td>"
             + log.loggername + "</td><td>" + log.message + "</td></tr>");
         even = !even;
@@ -150,16 +164,25 @@ function emptyFacets() {
     $(".results .results_header #searchFacets").replaceWith("<div id='searchFacets'></div>")
 }
 function showFacets(facets) {
-	$("#logsTimeline").show();
+    $("#logsTimeline").show();
     var resultsHeaderElement = $(".results .results_header #searchFacets");
     for (var facet in facets) {
         if (facet == "datehistogram") {
             logTimelineChart.series[0].remove(false);
             var values = new Array();
             var categories = new Array();
+            var lastTimestamp = 0;
             for (var i = 0; i < facets[facet].entries.length; i++) {
+                var timestamp = facets[facet].entries[i].time;
+                // fill with 0 for missing missing values
+                while (lastTimestamp != 0 && timestamp > lastTimestamp + 60 * 1000) {
+                    lastTimestamp = lastTimestamp + 60 * 1000;
+                    values.push(0);
+                    categories.push(lastTimestamp);
+                }
                 values.push(facets[facet].entries[i].count);
-                categories.push(facets[facet].entries[i].time);
+                categories.push(timestamp);
+                lastTimestamp = timestamp;
             }
             logTimelineChart.addSeries({
                 data: values
@@ -178,11 +201,10 @@ function showFacets(facets) {
 }
 </script>
 <div id="searchInput">
-      Search:
-      <input id="query" type="text" name="query" size="100" />
-      <a id="submit" href="#" onclick="launchSearch(); return false;"><img src="/img/search.png" /></a>
-      <a id="tail" href="#" onclick="toggleTailSearch(); return false;">tail -f</a>
-      <div id="connectionStatus"></div>
+    Search: <input id="query" type="text" name="query" size="100" /> <a id="submit" href="#"
+        onclick="launchSearch(); return false;"><img src="/img/search.png" />
+    </a> <a id="tail" href="#" onclick="toggleTailSearch(); return false;">tail -f</a>
+    <div id="connectionStatus"></div>
 </div>
 <div class="results">
     <div class="results_header">

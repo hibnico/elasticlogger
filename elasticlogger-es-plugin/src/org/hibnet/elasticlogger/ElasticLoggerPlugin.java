@@ -19,6 +19,7 @@ public class ElasticLoggerPlugin extends AbstractPlugin {
         return "Web frontend of indexed java logs";
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Collection<Class<? extends LifecycleComponent>> services() {
         Collection<Class<? extends LifecycleComponent>> services = Lists.newArrayList();

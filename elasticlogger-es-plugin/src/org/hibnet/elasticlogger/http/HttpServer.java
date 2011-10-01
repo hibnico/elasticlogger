@@ -38,7 +38,6 @@ public class HttpServer extends AbstractLifecycleComponent<HttpServer> {
 
     private int port;
     private String bindHost;
-    private String publishHost;
 
     private Server server;
 
@@ -51,8 +50,6 @@ public class HttpServer extends AbstractLifecycleComponent<HttpServer> {
         this.client = client;
         this.port = Integer.parseInt(componentSettings.get("port", settings.get("http.port", "9800")));
         this.bindHost = componentSettings.get("bind_host", settings.get("http.bind_host", settings.get("http.host")));
-        this.publishHost = componentSettings.get("publish_host",
-                settings.get("http.publish_host", settings.get("http.host")));
     }
 
     @Override

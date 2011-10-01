@@ -11,7 +11,7 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.elasticsearch.node.Node;
 
 public class ElasticLoggerAppender extends AppenderSkeleton {
@@ -83,7 +83,7 @@ public class ElasticLoggerAppender extends AppenderSkeleton {
     protected void append(LoggingEvent event) {
         XContentBuilder jsonBuilder;
         try {
-            jsonBuilder = XContentFactory.jsonBuilder();
+            jsonBuilder = JsonXContent.unCachedContentBuilder();
             jsonBuilder.startObject();
             jsonBuilder.field("timestamp", Long.toString(event.getTimeStamp()));
             if (event.getLevel() != null) {

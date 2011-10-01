@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.elasticsearch.node.Node;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -83,7 +83,7 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
     protected void append(ILoggingEvent event) {
         XContentBuilder jsonBuilder;
         try {
-            jsonBuilder = XContentFactory.jsonBuilder();
+            jsonBuilder = JsonXContent.unCachedContentBuilder();
             jsonBuilder.startObject();
             jsonBuilder.field("timestamp", Long.toString(event.getTimeStamp()));
             if (event.getLevel() != null) {

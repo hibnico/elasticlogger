@@ -194,10 +194,18 @@ function showFacets(facets) {
             for (var i = 0; i < facets[facet].terms.length; i++) {
                 facetValues = facetValues + "<li>" + facets[facet].terms[i].term + " (" + facets[facet].terms[i].count + ")</li>";
             }
-            resultsHeaderElement.append("<div class='facets'>" + facetNames[facet] + ": <ul>" + facetValues + "</ul></div>");
+            resultsHeaderElement.append("<div class='facetContainer'><div id='facet_" + facet + "' class='facets'>" + facetNames[facet] + " (" + facets[facet].terms.length + ")</div><div class='facetValues' id='facetValues_" + facet + "'><ul>" + facetValues + "</ul></div></div>");
+            if (facets[facet].terms.length > 0) {
+                $("#facet_" + facet).css("cursor", "pointer");
+                $("#facet_" + facet).click(mkToggleFacetValuesCallback(facet));
+            }
         }
     }
     resultsHeaderElement.append("<div class='clear'></div>");
+}
+
+function mkToggleFacetValuesCallback(facet) {
+	return function() { $("#facetValues_" + facet).toggle(200); };
 }
 </script>
 <div id="searchInput">
@@ -212,6 +220,7 @@ function showFacets(facets) {
     <div class="results_header">
         <div id="resultsMessage"></div>
         <div id="searchFacets"></div>
+        <div class="clear"></div>
         <div id="logsTimeline" style="width: 100%; height: 100px; display: none;"></div>
     </div>
     <div id="searchResults" style="display: none;">

@@ -142,24 +142,6 @@ html,body {
 	margin-bottom: 10px;
 }
 
-.facets {
-	float: left;
-	margin: 5px;
-	padding: 7px;
-	background-color : #E0E0E0;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	background-color: #E0E0E0;
-}
-
-.facets ul {
-    padding-left: 25px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-right: 5px;
-}
-
 .show_data {
     float: right;
     margin: 5px;
@@ -169,6 +151,40 @@ html,body {
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     background-color: #E0E0E0;
+}
+
+#resultsMessage {
+    float: left;
+}
+
+#searchFacets {
+    float: right;
+}
+
+.facetContainer {
+    float: left;
+}
+
+.facets {
+    margin-right: 5px;
+    padding: 2px;
+    background-color : #E0E0E0;
+    border-radius: 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: #E0E0E0;
+}
+
+.facetValues {
+    display: none;
+    float: left;
+}
+
+.facetValues ul {
+    padding-left: 25px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 5px;
 }
 
 .facets .facets_level {

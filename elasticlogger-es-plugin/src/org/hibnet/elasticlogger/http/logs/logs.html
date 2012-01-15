@@ -201,10 +201,12 @@ function showFacets(facets) {
 }
 </script>
 <div id="searchInput">
-    Search: <input id="query" type="text" name="query" size="100" /> <a id="submit" href="#"
-        onclick="launchSearch(); return false;"><img src="/img/search.png" />
-    </a> <a id="tail" href="#" onclick="toggleTailSearch(); return false;">tail -f</a>
+    <div id="searchLabel">Search: </div>
+    <input id="query" type="text" name="query" size="100" />
+    <a id="submit" href="#" onclick="launchSearch(); return false;"><img src="/img/search.png" /></a>
+    <a id="tail" href="#" onclick="toggleTailSearch(); return false;">tail -f</a>
     <div id="connectionStatus"></div>
+    <div class="clear"></div>
 </div>
 <div class="results">
     <div class="results_header">

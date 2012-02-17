@@ -1,12 +1,12 @@
 <ivy-module version="2.0">
     <info organisation="org.hibnet" module="elasticloger-log4j-appender" />
     <dependencies>
-        <dependency org="org.elasticsearch" name="elasticsearch" rev="0.17.6" transitive="false" />
-        <dependency org="org.apache.lucene" name="lucene-core" rev="3.3.0" transitive="false" />
-        <dependency org="org.apache.lucene" name="lucene-analyzers" rev="3.3.0" transitive="false" />
-        <dependency org="org.apache.lucene" name="lucene-memory" rev="3.3.0" transitive="false" />
-        <dependency org="org.apache.lucene" name="lucene-queries" rev="3.3.0" transitive="false" />
-        <dependency org="org.apache.lucene" name="lucene-highlighter" rev="3.3.0" transitive="false" />
-        <dependency org="log4j" name="log4j" rev="1.2.16" transitive="false" />
+        <dependency org="org.elasticsearch" name="elasticsearch"      rev="0.19.0.RC2" transitive="false" />
+        <dependency org="org.apache.lucene" name="lucene-core"        rev="3.5.0"      transitive="false" />
+        <dependency org="org.apache.lucene" name="lucene-analyzers"   rev="3.5.0"      transitive="false" />
+        <dependency org="org.apache.lucene" name="lucene-memory"      rev="3.5.0"      transitive="false" />
+        <dependency org="org.apache.lucene" name="lucene-queries"     rev="3.5.0"      transitive="false" />
+        <dependency org="org.apache.lucene" name="lucene-highlighter" rev="3.5.0"      transitive="false" />
+        <dependency org="log4j"             name="log4j"              rev="1.2.16"     transitive="false" />
     </dependencies>
 </ivy-module>

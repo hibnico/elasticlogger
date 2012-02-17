@@ -83,7 +83,7 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
     protected void append(ILoggingEvent event) {
         XContentBuilder jsonBuilder;
         try {
-            jsonBuilder = JsonXContent.unCachedContentBuilder();
+            jsonBuilder = JsonXContent.contentBuilder();
             jsonBuilder.startObject();
             jsonBuilder.field("timestamp", Long.toString(event.getTimeStamp()));
             if (event.getLevel() != null) {
@@ -131,39 +131,4 @@ public class ElasticLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEv
         // some remote logging indexation
     }
 
-    private static class JsonBuilder {
-
-        private StringBuilder builder = new StringBuilder("{");
-
-        private boolean first = true;
-
-        private void add(String name, Object value) {
-            if (value == null) {
-                return;
-            }
-            add(name, value.toString());
-        }
-
-        private void add(String name, String value) {
-            if (value == null || value.length() == 0) {
-                return;
-            }
-            if (first) {
-                builder.append('\"');
-            } else {
-                builder.append(",\"");
-            }
-            first = false;
-            builder.append(name);
-            builder.append("\":\"");
-            builder.append(value.replaceAll("\"", "\\\""));
-            builder.append('\"');
-        }
-
-        private String getResult() {
-            builder.append('}');
-            return builder.toString();
-        }
-
-    }
 }

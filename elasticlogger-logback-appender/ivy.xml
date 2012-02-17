@@ -1,14 +1,16 @@
 <ivy-module version="2.0">
     <info organisation="org.hibnet" module="elasticloger-lockback-appender" />
     <dependencies>
-        <dependency org="org.elasticsearch" name="elasticsearch" rev="0.17.6" transitive="false" />
-        <dependency org="org.apache.lucene" name="lucene-core" rev="3.3.0" transitive="false" />
-        <dependency org="org.apache.lucene" name="lucene-analyzers" rev="3.3.0" transitive="false" />
-        <dependency org="org.apache.lucene" name="lucene-memory" rev="3.3.0" transitive="false" />
-        <dependency org="org.apache.lucene" name="lucene-queries" rev="3.3.0" transitive="false" />
+        <dependency org="org.elasticsearch" name="elasticsearch" rev="0.19.0.RC2" transitive="false" />
+
+        <dependency org="org.apache.lucene" name="lucene-core"        rev="3.3.0" transitive="false" />
+        <dependency org="org.apache.lucene" name="lucene-analyzers"   rev="3.3.0" transitive="false" />
+        <dependency org="org.apache.lucene" name="lucene-memory"      rev="3.3.0" transitive="false" />
+        <dependency org="org.apache.lucene" name="lucene-queries"     rev="3.3.0" transitive="false" />
         <dependency org="org.apache.lucene" name="lucene-highlighter" rev="3.3.0" transitive="false" />
-        <dependency org="ch.qos.logback" name="logback-classic" rev="0.9.29" transitive="false" />
-        <dependency org="ch.qos.logback" name="logback-core" rev="0.9.29" transitive="false" />
-        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" transitive="false" />
+
+        <dependency org="ch.qos.logback" name="logback-classic" rev="1.0.0" transitive="false" />
+        <dependency org="ch.qos.logback" name="logback-core"    rev="1.0.0" transitive="false" />
+        <dependency org="org.slf4j"      name="slf4j-api"       rev="1.6.4" transitive="false" />
     </dependencies>
 </ivy-module>

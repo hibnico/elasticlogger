@@ -83,7 +83,7 @@ public class ElasticLoggerAppender extends AppenderSkeleton {
     protected void append(LoggingEvent event) {
         XContentBuilder jsonBuilder;
         try {
-            jsonBuilder = JsonXContent.unCachedContentBuilder();
+            jsonBuilder = JsonXContent.contentBuilder();
             jsonBuilder.startObject();
             jsonBuilder.field("timestamp", Long.toString(event.getTimeStamp()));
             if (event.getLevel() != null) {
